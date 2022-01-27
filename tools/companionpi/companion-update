@@ -1,0 +1,17 @@
+#!/bin/bash -e
+
+# stop companion
+systemctl stop companion
+
+# fetch new code
+cd /usr/local/src/companion
+git pull
+
+# TODO - prompt for which branch to use
+
+# do the update
+./tools/companionpi/update.sh
+
+# restart companion
+# reboot
+systemctl start companion

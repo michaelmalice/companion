@@ -1,0 +1,14 @@
+#!/bin/bash -e
+
+echo "Are you sure you want to wipe the companion configuration?"
+
+# TODO prompt for acknowledgement
+
+# stop companion
+systemctl stop companion
+
+# wipe the config
+rm -Rf /home/companion/companion
+
+# restart companion
+systemctl start companion

@@ -42,7 +42,7 @@ build {
 
       # install some dependencies
       "apt-get update",
-      "apt-get install -y git unzip curl libusb-1.0-0-dev libudev-dev",
+      "apt-get install -y git unzip curl libusb-1.0-0-dev libudev-dev cmake",
       "apt-get clean"
     ]
   }

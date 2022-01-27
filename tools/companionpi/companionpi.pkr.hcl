@@ -55,7 +55,7 @@ build {
       # install fnm to manage node version
       # we do this to /opt/fnm, so that the companion user can use the same installation
       "export FNM_DIR=/opt/fnm",
-      "echo \"export FNM_DIR=/opt/fnm\" >> /root/.bashrc"
+      "echo \"export FNM_DIR=/opt/fnm\" >> /root/.bashrc",
       "curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir /opt/fnm",
       "export PATH=/opt/fnm:$PATH",
       "eval \"`fnm env --shell bash`\"",
@@ -79,7 +79,7 @@ build {
       "cd /usr/local/src/companion",
 
       # add the fnm node to this users path
-      "echo \"export PATH=/opt/fnm/aliases/default/bin:\$PATH\" >> ~/.bashrc"
+      "echo \"export PATH=/opt/fnm/aliases/default/bin:\\$PATH\" >> ~/.bashrc"
 
     ]
   }

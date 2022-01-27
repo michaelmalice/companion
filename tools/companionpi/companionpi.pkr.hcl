@@ -53,8 +53,11 @@ build {
     inline_shebang  = "/bin/bash -e"
     inline = [
       # install fnm to manage node version
-      "curl -fsSL https://fnm.vercel.app/install | bash",
-      "export PATH=$HOME/.fnm:$PATH",
+      # we do this to /opt/fnm, so that the companion user can use the same installation
+      "export FNM_DIR=/opt/fnm",
+      "echo \"export FNM_DIR=/opt/fnm\" >> /root/.bashrc"
+      "curl -fsSL https://fnm.vercel.app/install | bash -s -- --install-dir /opt/fnm",
+      "export PATH=/opt/fnm:$PATH",
       "eval \"`fnm env --shell bash`\"",
       # clone the repository
       "git clone https://github.com/bitfocus/companion.git -b ${var.branch} /usr/local/src/companion",
@@ -73,7 +76,11 @@ build {
     execute_command = "chmod +x {{ .Path }}; {{ .Vars }} su companion -c {{ .Path }}"
     inline_shebang  = "/bin/bash -e"
     inline = [
-      "cd /usr/local/src/companion"
+      "cd /usr/local/src/companion",
+
+      # add the fnm node to this users path
+      "echo \"export PATH=/opt/fnm/aliases/default/bin:\$PATH\" >> ~/.bashrc"
+
     ]
   }
 

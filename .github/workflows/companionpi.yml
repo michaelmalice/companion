@@ -5,9 +5,9 @@ on:
   push:
 
 jobs:
-  packer:
+  build:
     runs-on: ubuntu-latest
-    name: packer
+    name: build image
 
     steps:
       - name: Checkout Repository

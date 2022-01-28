@@ -3,6 +3,11 @@
 # this is the bulk of the update script
 # It is a separate file, so that the freshly cloned copy is invoked, not the old copy
 
+# imitiate the fnm setup done in .bashrc
+export FNM_DIR=/opt/fnm
+export PATH=/opt/fnm:$PATH
+eval "`fnm env`"
+
 cd /usr/local/src/companion
 
 # update the node version

@@ -36,10 +36,6 @@ build {
       # add a system user
       "adduser --disabled-password companion --gecos \"\"",
 
-      # change the local to en-us
-      "echo \"en_US.UTF-8 UTF-8\" | tee -a /etc/locale.gen",
-      "locale-gen",
-
       # install some dependencies
       "apt-get update",
       "apt-get install -y git unzip curl libusb-1.0-0-dev libudev-dev cmake",

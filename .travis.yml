@@ -1,0 +1,72 @@
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.3
+      language: node_js
+      node_js: "8"
+
+    - os: linux
+      services: docker
+      language: generic
+
+branches:
+  only:
+  - master
+
+env:
+  global:
+    - ELECTRON_CACHE=$HOME/.cache/electron
+    - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
+
+notifications:
+    email:
+    - michael.larsen91@gmail.com
+
+cache:
+  directories:
+  - node_modules
+  - $HOME/.cache/electron
+  - $HOME/.cache/electron-builder
+  - $HOME/.npm/_prebuilds
+  - $HOME/.cache/snapcraft
+
+before_install:
+  - curl -L https://yarnpkg.com/latest.tar.gz | tar xvz && mv yarn-v* $HOME/.yarn
+  - export PATH="$HOME/.yarn/bin:$PATH"
+  - git fetch --unshallow
+  - git submodule sync
+  - git submodule init
+  - git submodule update
+
+install:
+  - ./tools/build_writefile.sh
+
+
+script:
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      docker run --rm \
+        -v ${PWD}:/project \
+        -v ~/.cache/electron:/root/.cache/electron \
+        -v ~/.cache/electron-builder:/root/.cache/electron-builder \
+        -v ~/.cache/snapcraft:/root/.cache/snapcraft \
+        haakonn/electron-wine:v1 \
+        /bin/bash -c "apt-get update && apt-get install -y git libudev-dev ; tools/yarn.sh ; npm run lindist";
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      tools/yarn.sh
+      npm run dist
+    fi
+  - ./tools/build_rename_git.sh
+
+before_cache:
+  - rm -rf $HOME/.cache/electron-builder/wine
+
+branches:
+  except:
+    - "/^v\\d+\\.\\d+\\.\\d+$/"
+
+after_success:
+  - "if [[ \"$TRAVIS_OS_NAME\" == \"osx\" ]]; then curl -T electron-output/*.zip -u $FTP_USER:$FTP_PASSWORD ftp://$FTP_IP/deploy/electron-output/ ; fi"
+  - "if [[ \"$TRAVIS_OS_NAME\" == \"linux\" ]]; then curl -T electron-linux-output/*.tar.gz -u $FTP_USER:$FTP_PASSWORD ftp://$FTP_IP/deploy/electron-linux-output/ ; fi"
